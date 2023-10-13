@@ -6,6 +6,8 @@ namespace MVCApplication_1.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public Status Status { get; set; }
+
+        public string Status { get; set; }
+
     }
 }
