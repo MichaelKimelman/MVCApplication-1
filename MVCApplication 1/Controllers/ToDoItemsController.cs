@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -48,6 +50,8 @@ namespace MVCApplication_1.Controllers
         // GET: ToDoItems/Create
         public IActionResult Create()
         {
+
+            ViewData["StatusOptions"] = new SelectList(GetStatusesInString(), "Value", "Text", 1);
             return View();
         }
 
@@ -80,6 +84,9 @@ namespace MVCApplication_1.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["StatusOptions"] = new SelectList(GetStatusesInString(), "Value", "Text", 1);
+
             return View(toDoItem);
         }
 
@@ -158,6 +165,20 @@ namespace MVCApplication_1.Controllers
         private bool ToDoItemExists(int id)
         {
           return (_context.ToDoItem?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        private List<SelectListItem> GetStatusesInString()
+        {
+            var selectListItemList = new List<SelectListItem>();
+
+            foreach (var s in Enum.GetNames(typeof(Status)))
+            {
+                string modified = Regex.Replace(s, "([A-Z])", " $1").Trim();
+
+                selectListItemList.Add(new SelectListItem() { Text = modified, Value = modified });
+            }
+
+            return selectListItemList;
         }
     }
 }
